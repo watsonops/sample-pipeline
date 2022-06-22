@@ -4,11 +4,9 @@ jobs:
   WatsonOps-Push:
     runs-on: ubuntu-latest
     steps:
+     - name: Log in to registry
+        # This is where you will update the PAT to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - run: |
-          echo ${{ secrets.PIPELINE_PAT }} | docker login ghcr.io -u Pipeline_PAT --password-stdin
           docker image ls
-
-      - uses: actions/labeler@v4
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
