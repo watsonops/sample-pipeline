@@ -4,8 +4,5 @@ jobs:
   WatsonOps-Push:
     runs-on: ubuntu-latest
     steps:
-      - name: Log in to registry
-          run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - run: |
-          docker image ls
-
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u Pipeline_PAT --password-stdin
