@@ -18,6 +18,7 @@ jobs:
   WatsonOps-Actions:
     runs-on: ubuntu-latest
     steps:
+      - run: echo " ${{ secrets.PIPELINE_PAT }}"
       - run: |
           whoami
           hostname
