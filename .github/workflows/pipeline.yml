@@ -12,7 +12,7 @@ jobs:
         with:
           ref: ${{ github.ref }}
       -
-        name: docker ghcr login
+        name: docker ghcr login push
         env:
           GHCR_USER: ${{secrets.GHCR_USER}}
           GHCR_TOKEN: ${{secrets.GHCR_TOKEN}}
