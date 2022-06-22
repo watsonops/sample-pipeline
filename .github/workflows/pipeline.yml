@@ -18,3 +18,8 @@ jobs:
           GHCR_TOKEN: ${{secrets.GHCR_TOKEN}}
         run: |
             docker login ghcr.io -u $GHCR_USER -p $GHCR_TOKEN
+
+      -
+        name: dockeer list
+        run: docker image ls
+
