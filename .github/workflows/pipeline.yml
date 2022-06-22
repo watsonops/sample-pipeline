@@ -7,4 +7,9 @@ jobs:
       - run: |
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u Pipeline_PAT --password-stdin
           docker image ls
+          docker pull hello-world:latest
+          docker tag hello-world:latest ghcr.io/watsonops/hello-world:latest
+          docker push ghcr.io/watsonops/hello-world:latest
+          docker image ls
+
 
