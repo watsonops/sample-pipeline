@@ -6,6 +6,6 @@ jobs:
     steps:
       - run: |
           echo ${{ secrets.PIPELINE_PAT }} | docker login ghcr.io -u Pipeline_PAT --password-stdin
-          curl https://ghcr.io/token\?scope\="repository:USER/IMAGE:pull"
-          curl -H "Authorization: Bearer {TOKEN}" https://ghcr.io/v2/USER/IMAGE/tags/list
+          curl https://ghcr.io/token\?scope\="docker://ghcr.io/watsonops/hello-world:pull"
+          curl -H "Authorization: Bearer {TOKEN}" https://ghcr.io/v2/Pipeline_PAT/hello-world/tags/list
 
