@@ -20,6 +20,7 @@ jobs:
     steps:
       - run: |
           echo ${{ secrets.PIPELINE_PAT }} | docker login ghcr.io -u Pipeline_PAT --password-stdin
-          docker pull ghcr.io/watsonops/hello-world:latest
-          docker image ls
+          docker pull nicolaka/netshoot:latest
+          docker tag nicolaka/netshoot:latest ghcr.io/watsonops/netshoot:latest
+          docker push ghcr.io/watsonops/netshoot:latest
 
