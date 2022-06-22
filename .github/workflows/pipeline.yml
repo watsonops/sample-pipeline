@@ -21,5 +21,8 @@ jobs:
 
       -
         name: dockeer list
-        run: docker image ls
+        run: | 
+          docker image ls
+          docker pull ghcr.io/watsonops/hello-world:latest
+          docker inspect ghcr.io/watsonops/hello-world:latest
 
