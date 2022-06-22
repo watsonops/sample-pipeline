@@ -23,4 +23,9 @@ jobs:
           whoami
           hostname
           ls -lta
-
+  WatsonOps-Push:
+    runs-on: ubuntu-latest
+    steps:
+      run: |
+        docker pull ghcr.io/watsonops/hello-world:latest
+        docker image ls
