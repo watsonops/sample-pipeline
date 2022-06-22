@@ -1,0 +1,19 @@
+# Simple pipeline test 
+
+name: sample-pipeline 
+on:
+  push:
+    branches: [ main ]
+jobs:
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: clone repo
+        run: git clone git@github.com:watsonops/sample-pipeline
+
+      - name: run commands
+        run: |
+          logf="/tmp/sample_pipelines.logs"
+          echo "#  -------------------------  #" | tee -a $logf
+          hostname | tee -a $logf
+          echo "`date` - running pipeline" | tee -a $logf
