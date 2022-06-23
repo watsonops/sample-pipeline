@@ -11,16 +11,9 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: ${{ secrets.GHCR_USER  }}
+          password: ${{ secrets.GHCR_TOKEN }}
       - 
-        name: docker ghcr login push
-        env:
-          GHCR_USER: ${{secrets.GHCR_USER}}
-          GHCR_TOKEN: ${{secrets.GHCR_TOKEN}}
-        run: |
-            docker login ghcr.io -u $GHCR_USER -p $GHCR_TOKEN
-      -
         name: dockeer list
         run: | 
           docker image ls
