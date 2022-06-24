@@ -7,7 +7,6 @@ on:
     tags:
       - 'v*'
 
-
 jobs:
   build:
     name: Create Release
@@ -21,13 +20,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.event.inputs.tag }}
-          release_name: Release ${{ github.event.inputs.tag }}
+          tag_name: v0.0.2
+          release_name: Release v0.0.2
           body: |
             Changes in this Release
             - First Change
-            - Second Change
           draft: false
           prerelease: false
-
 
