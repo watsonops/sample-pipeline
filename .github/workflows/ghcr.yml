@@ -34,12 +34,10 @@ jobs:
       - 
         name: docker pull
         run: |
-          docker pull ghcr.io/watsonops/hello-world:latest
           docker pull ghcr.io/watsonops/simplewhale:latest
       - 
         name: docker inspect
         run: |
-          docker inspect ghcr.io/watsonops/hello-world:latest
           docker inspect ghcr.io/watsonops/simplewhale:latest
       -     
         name: docker updated list
