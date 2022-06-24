@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ CI_BUILD_TAG }}
+          ref: v0.1.0
       - name: Publish release
         uses: eloquent/github-release-action@v2
 
