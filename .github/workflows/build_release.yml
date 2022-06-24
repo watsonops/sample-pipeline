@@ -6,25 +6,20 @@ on:
       - 'sbx'
     tags:
       - 'v*'
-
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The tag to publish
+        required: true
 jobs:
-  build:
-    name: Create Release
+  publish:
     runs-on: ubuntu-latest
+    name: Publish release
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          tag_name: v0.0.2
-          release_name: Release v0.0.2
-          body: |
-            Changes in this Release
-            - First Change
-          draft: false
-          prerelease: false
+          ref: refs/tags/${{ github.event.inputs.tag }}
+      - name: Publish release
+        uses: eloquent/github-release-action@v2
 
