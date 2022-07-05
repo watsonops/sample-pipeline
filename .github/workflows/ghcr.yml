@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - 'sbx'
+      - 'main'
 
 jobs:
   build:
@@ -26,12 +26,12 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/watsonops/simplewhale:v0.0.6
+          tags: ghcr.io/watsonops/simplewhale:v0.0.7
       - 
         name: docker pull
         run: |
-          docker pull ghcr.io/watsonops/simplewhale:v0.0.6
+          docker pull ghcr.io/watsonops/simplewhale:v0.0.7
       - 
         name: docker inspect
         run: |
-          docker inspect ghcr.io/watsonops/simplewhale:v0.0.6
+          docker inspect ghcr.io/watsonops/simplewhale:v0.0.7
