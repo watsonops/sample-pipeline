@@ -26,4 +26,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/watsonops/simplewhale:v2.0.0
+          tags: ghcr.io/watsonops/simplewhale:v1.0.0
