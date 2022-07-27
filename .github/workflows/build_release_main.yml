@@ -1,8 +1,10 @@
-name: release_build_tag
+name: build_release_main 
 on:
   push:
+    branches:
+      - 'main'
     tags:
-      - 'v*'
+      - 'v2*'
   workflow_dispatch:
     inputs:
       tag:
@@ -16,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: v1.0.0
+          ref: v2.0.0
       - name: Publish release
         uses: eloquent/github-release-action@v2
 
