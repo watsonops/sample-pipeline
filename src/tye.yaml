@@ -42,3 +42,6 @@ services:
     bindings:
       - name: http
         protocol: http
+
+registry: ghcr.io/watsonops/medula:v1.0.0
+
