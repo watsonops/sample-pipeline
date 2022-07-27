@@ -26,12 +26,12 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/watsonops/simplewhale:v1.1.0
+          tags: ghcr.io/watsonops/simplewhale:v2.0.0
       - 
         name: docker pull
         run: |
-          docker pull ghcr.io/watsonops/simplewhale:v1.1.0
+          docker pull ghcr.io/watsonops/simplewhale:v2.0.0
       - 
         name: docker inspect
         run: |
-          docker inspect ghcr.io/watsonops/simplewhale:v1.1.0
+          docker inspect ghcr.io/watsonops/simplewhale:v2.0.0
