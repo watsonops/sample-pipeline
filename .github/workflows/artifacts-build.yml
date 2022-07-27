@@ -1,0 +1,16 @@
+name: Artifacts Build
+
+on:
+  push:
+    branches:
+      - build-artifacts-update
+
+jobs:
+  build-artifact:
+    name: Artifacts Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
