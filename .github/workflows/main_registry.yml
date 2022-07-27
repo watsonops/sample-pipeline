@@ -1,4 +1,4 @@
-name: build_registry_main
+name: main_registry 
 
 on:
   push:
@@ -26,12 +26,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/watsonops/simplewhale:v2.2.0
-      - 
-        name: docker pull
-        run: |
-          docker pull ghcr.io/watsonops/simplewhale:v2.2.0
-      - 
-        name: docker inspect
-        run: |
-          docker inspect ghcr.io/watsonops/simplewhale:v2.2.0
+          tags: ghcr.io/watsonops/simplewhale:v0.1.0

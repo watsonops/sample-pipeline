@@ -1,8 +1,8 @@
-name: build_release_main 
+name: main_release 
 on:
   push:
     tags:
-      - 'v2.2*'
+      - 'v2*'
   workflow_dispatch:
     inputs:
       tag:
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: v2.2.0
+          ref: v2.0.0
       - name: Publish release
         uses: eloquent/github-release-action@v2
 
