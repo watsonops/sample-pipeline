@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Runtime vars
+      - name: Get runtime vars
         run: |
           echo "SHA = ${{ github.sha }}"
           echo "github event ref = ${{ github.event.ref }}"
@@ -20,18 +20,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials - dev
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_dev }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_dev }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_STAGE }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
           aws-region: us-east-1
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Set vars to dev
+      - name: Set env vars to dev
         if: |
           startsWith(github.event.ref, 'refs/tags/dev-v') ||
           endsWith(github.ref, '/dev')
@@ -39,14 +39,22 @@ jobs:
           echo "AWS_ACCNT=770750324254" >> $GITHUB_ENV
           echo "ECR_REGISTRY=$AWS_ACCNT.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
           echo "ECR_SHA_TAG=${{ github.sha }}" >> $GITHUB_ENV
-          echo "ECR_WEB_REPOSITORY=dw-web-image-repo" >> $GITHUB_ENV
+          echo "ECR_REPOSITORY=dw-web-image-repo" >> $GITHUB_ENV
           this_version=$(echo "${{ github.ref }}" | cut -f3 -d'/')
           echo "RELEASE_VERSION=$this_version" >> $GITHUB_ENV
 
-      - name: ECR dw-web-image-repo 
+      - name: Check runtime vars
+        run: |
+          echo "AWS_ACCNT = $AWS_ACCNT"
+          echo "Registry = $ECR_REGISTRY"
+          echo "Image repo = $ECR_REPOSITORY"
+          echo "SHA = $ECR_SHA_TAG"
+          echo "Version = $RELEASE_VERSION"
+
+      - name: Container image build, tag and push
         if: |
           startsWith(github.event.ref, 'refs/tags/dev-v') ||
-          endsWith(github.ref, '/staging')
+          endsWith(github.ref, '/dev')
         id: build-image
         env:
           DOCKER_BUILDKIT: 1
@@ -55,9 +63,9 @@ jobs:
         run: |
           docker build \
                 --file ./Dockerfile \
-                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$ECR_SHA_TAG \
-                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$RELEASE_VERSION \
-                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:latest  \
+                --tag $ECR_REGISTRY/$ECR_REPOSITORY:$ECR_SHA_TAG \
+                --tag $ECR_REGISTRY/$ECR_REPOSITORY:$RELEASE_VERSION \
+                --tag $ECR_REGISTRY/$ECR_REPOSITORY:latest  \
                 .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
 
