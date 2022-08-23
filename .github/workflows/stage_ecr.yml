@@ -1,9 +1,9 @@
 name: stage_ecr
 on:
   push:
-    branches:
-      - staging
-      - build-artifacts-update
+    tags:
+      - 'stage-v*' # Push events to matching stage-v*, i.e. stage-v1.0, stage-v20.15.10
+
 jobs:
   deploy:
     name: Deploy ECR Registry
