@@ -26,12 +26,11 @@ jobs:
           # Setup git user
           git config --global user.email "watson.ops@gmail.com"
           git config --global user.name "WatsonOps"
-
           # Install vinnie
           pip install vinnie
-
           # Get next version and pass along in the environment
-          vinnie --prefix=dev-v patch
+          # vinnie --prefix=dev-v patch
+          vinnie version
 
 
       - name: Configure AWS credentials - dev
