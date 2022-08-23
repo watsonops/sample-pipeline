@@ -16,6 +16,8 @@ jobs:
           echo "SHA = ${{ github.sha }}"
           echo "github event ref = ${{ github.event.ref }}"
           echo "github ref = ${{ github.ref }}"
+          this_version=$(echo "refs/tags/stage-v1.0.7" | cut -f3 -d'/')
+          echo "$this_version" >> GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -68,7 +70,7 @@ jobs:
           docker build \
                 --file ./Dockerfile \
                 --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$ECR_SHA_TAG \
-                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:${{ github.ref }} \
+                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$this_version \
                 --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:latest  \
                 .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
