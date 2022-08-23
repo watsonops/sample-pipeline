@@ -27,6 +27,7 @@ jobs:
 
       - name: Set env to staging
         if: |
+          startsWith(github.event.ref, 'refs/tags/stage-v') ||
           endsWith(github.ref, '/staging')
         run: |
           echo "ECR_REGISTRY=786081340798.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
