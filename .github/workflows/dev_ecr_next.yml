@@ -29,7 +29,12 @@ jobs:
           # Install vinnie
           pip install vinnie
           # Get next version and pass along in the environment
-          vinnie --prefix=dev-v patch
+          vinnie --prefix=dev-v patch > vinnie.txt
+          export VINNIE_VERSION=`cat vinnie.txt`
+          echo "vinnie_version=$VINNIE_VERSION" >> $GITHUB_ENV
+          # Set git tag and push
+          git tag $VINNIE_VERSION
+          git push --tags
 
       - name: Configure AWS credentials - dev
         uses: aws-actions/configure-aws-credentials@v1
