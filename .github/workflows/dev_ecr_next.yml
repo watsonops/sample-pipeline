@@ -21,23 +21,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Tag with Vinnie
+      - name: Install Vinnie
         run: |
           # Setup git user
           git config --global user.email "watson.ops@gmail.com"
           git config --global user.name "WatsonOps"
           # Install vinnie
           pip install vinnie
-          VINNIE_CURRENT_VERSION=$(vinnie --prefix=dev-v version)
-          echo "VINNIE_CURRENT_VERSION=$VINNIE_CURRENT_VERSION" >> $GITHUB_ENV
-          echo "$VINNIE_CURRENT_VERSION"
-          echo "Patch version"
-          vinnie --prefix=dev-v patch
-          export VINNIE_VERSION=`cat vinnie.txt`
-          echo "vinnie_version=$VINNIE_VERSION" >> $GITHUB_ENV
+          #VINNIE_CURRENT_VERSION=$(vinnie --prefix=dev-v version)
+          #echo "VINNIE_CURRENT_VERSION=$VINNIE_CURRENT_VERSION" >> $GITHUB_ENV
+          #echo "$VINNIE_CURRENT_VERSION"
+          #echo "Patch version"
+          #vinnie --prefix=dev-v patch
+          #export VINNIE_VERSION=`cat vinnie.txt`
+          #echo "vinnie_version=$VINNIE_VERSION" >> $GITHUB_ENV
           # Set git tag and push
-          git tag $VINNIE_VERSION
-          git push --tags
+          #git tag $VINNIE_VERSION
+          #git push --tags
+
+      - name: Get current version
+        run: |
+          VINNIE_VERSION=$(vinnie --prefix=dev-v version)
+          echo "VINNIE_VERSION=$VINNIE_VERSION" >> $GITHUB_ENV
+          echo "current version = $VINNIE_VERSION"
 
       - name: Configure AWS credentials - dev
         uses: aws-actions/configure-aws-credentials@v1
