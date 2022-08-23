@@ -16,8 +16,6 @@ jobs:
           echo "SHA = ${{ github.sha }}"
           echo "github event ref = ${{ github.event.ref }}"
           echo "github ref = ${{ github.ref }}"
-          this_version=$(echo "refs/tags/stage-v1.0.7" | cut -f3 -d'/')
-          echo "$this_version" >> GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -33,7 +31,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Set env to staging
+      - name: Set env vars to staging
         if: |
           startsWith(github.event.ref, 'refs/tags/stage-v') ||
           endsWith(github.ref, '/staging')
@@ -42,6 +40,8 @@ jobs:
           echo "ECR_SHA_TAG=${{ github.sha }}" >> $GITHUB_ENV
           echo "ECR_WEB_REPOSITORY=temp-web-repo" >> $GITHUB_ENV
           echo "ECR_API_REPOSITORY=temp-api-repo" >> $GITHUB_ENV
+          this_version=$(echo "${{ github.ref }}" | cut -f3 -d'/')
+          echo "$this_version" >> GITHUB_ENV
 
       - name: temp-web-repo ECR
         if: |
