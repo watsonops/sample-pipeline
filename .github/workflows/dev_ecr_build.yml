@@ -31,6 +31,7 @@ jobs:
           # Get next version and pass along in the environment
           # vinnie --prefix=dev-v patch
           vinnie version
+          vinnie --prefix=dev-v version
 
 
       - name: Configure AWS credentials - dev
