@@ -1,4 +1,4 @@
-name: Staging Test
+name: stage_ecr
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
       - build-artifacts-update
 jobs:
   deploy:
-    name: Deploy tilt-repo to AWS
+    name: Deploy ECR Registry
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -44,13 +44,6 @@ jobs:
           docker tag nicolaka/netshoot $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Build and push to ghcr.io
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: $ECR_REGISTRY/temp-api-repo:$IMAGE_TAG
 
 
 

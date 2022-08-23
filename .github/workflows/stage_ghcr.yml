@@ -1,4 +1,4 @@
-name: staging_registry 
+name: stage_ghcr 
 
 on:
   push:
