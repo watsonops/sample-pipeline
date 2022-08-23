@@ -36,7 +36,7 @@ jobs:
 
       - name: temp-web-repo ECR
         if: |
-          startsWith(github.event.ref, 'refs/tags/stage-v')
+          startsWith(github.event.ref, 'refs/tags/stage-v') ||
           endsWith(github.ref, '/staging')
         env:
           DOCKER_BUILDKIT: 1
@@ -50,7 +50,7 @@ jobs:
 
       - name: temp-api-repo ECR
         if: |
-          startsWith(github.event.ref, 'refs/tags/stage-v')
+          startsWith(github.event.ref, 'refs/tags/stage-v') ||
           endsWith(github.ref, '/staging')
         id: build-image
         env:
