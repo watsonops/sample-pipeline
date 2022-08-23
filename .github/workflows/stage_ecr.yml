@@ -41,7 +41,7 @@ jobs:
           echo "ECR_WEB_REPOSITORY=temp-web-repo" >> $GITHUB_ENV
           echo "ECR_API_REPOSITORY=temp-api-repo" >> $GITHUB_ENV
           this_version=$(echo "${{ github.ref }}" | cut -f3 -d'/')
-          echo "$this_version" >> GITHUB_ENV
+          echo "$this_version" >> $GITHUB_ENV
 
       - name: temp-web-repo ECR
         if: |
