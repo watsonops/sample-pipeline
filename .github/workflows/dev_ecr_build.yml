@@ -1,8 +1,8 @@
-name: stage_ecr
+name: dev_ecr_build
 on:
   push:
     tags:
-      - 'stage-v*' # Push events to matching stage-v*, i.e. stage-v1.0, stage-v20.15.10
+      - 'dev-v*' # Push events to matching dev-v*, i.e. dev-v1.0, dev-v20.15.10
 
 jobs:
   deploy:
@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Runs on dev tag only
+      - name: Runtime vars
         run: |
           echo "SHA = ${{ github.sha }}"
           echo "github event ref = ${{ github.event.ref }}"
@@ -20,51 +20,38 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials - Stage
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_STAGE }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_dev }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_dev }}
           aws-region: us-east-1
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Set env vars to staging
+      - name: Set vars to dev
         if: |
-          startsWith(github.event.ref, 'refs/tags/stage-v') ||
-          endsWith(github.ref, '/staging')
+          startsWith(github.event.ref, 'refs/tags/dev-v') ||
+          endsWith(github.ref, '/dev')
         run: |
-          echo "ECR_REGISTRY=786081340798.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
+          echo "AWS_ACCNT=770750324254" >> $GITHUB_ENV
+          echo "ECR_REGISTRY=$AWS_ACCNT.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
           echo "ECR_SHA_TAG=${{ github.sha }}" >> $GITHUB_ENV
-          echo "ECR_WEB_REPOSITORY=temp-web-repo" >> $GITHUB_ENV
-          echo "ECR_API_REPOSITORY=temp-api-repo" >> $GITHUB_ENV
+          echo "ECR_WEB_REPOSITORY=dw-web-image-repo" >> $GITHUB_ENV
           this_version=$(echo "${{ github.ref }}" | cut -f3 -d'/')
           echo "RELEASE_VERSION=$this_version" >> $GITHUB_ENV
 
-      - name: temp-web-repo ECR
+      - name: ECR dw-web-image-repo 
         if: |
-          startsWith(github.event.ref, 'refs/tags/stage-v') ||
-          endsWith(github.ref, '/staging')
-        env:
-          DOCKER_BUILDKIT: 1
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: temp-web-repo
-        run: |
-          docker pull nicolaka/netshoot
-          docker tag nicolaka/netshoot $ECR_REGISTRY/$ECR_WEB_REPOSITORY:$ECR_SHA_TAG
-          docker push $ECR_REGISTRY/$ECR_WEB_REPOSITORY:$ECR_SHA_TAG
-
-      - name: temp-api-repo ECR
-        if: |
-          startsWith(github.event.ref, 'refs/tags/stage-v') ||
+          startsWith(github.event.ref, 'refs/tags/dev-v') ||
           endsWith(github.ref, '/staging')
         id: build-image
         env:
           DOCKER_BUILDKIT: 1
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: temp-api-repo
+          ECR_REPOSITORY: dw-web-image-repo
         run: |
           docker build \
                 --file ./Dockerfile \
