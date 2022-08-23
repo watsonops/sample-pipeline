@@ -39,6 +39,10 @@ jobs:
           #git tag $VINNIE_VERSION
           #git push --tags
 
+      - name: Get first current version
+        run: |
+          vinnie --prefix=dev-v version
+
       - name: Get current version
         run: |
           # Setup git user
