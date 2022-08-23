@@ -60,22 +60,8 @@ jobs:
                 --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:stage  \
                 --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:latest  \
                 .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$ECR_SHA_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
 
-
-      - name: Test multi tags
-        uses: docker/build-push-action@v2
-        env:
-          DOCKER_BUILDKIT: 1
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: temp-api-repo
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            $ECR_REGISTRY/$ECR_API_REPOSITORY:$ECR_SHA_TAG
-            $ECR_REGISTRY/$ECR_API_REPOSITORY:latest
 
 
 
