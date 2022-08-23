@@ -16,9 +16,9 @@ jobs:
           echo "SHA = ${{ github.sha }}"
           echo "github event ref = ${{ github.event.ref }}"
           echo "github ref = ${{ github.ref }}"
-          echo "GITHUB_EVENT_NAME = ${{ github.GITHUB_EVENT_NAME }}"
-          echo "GITHUB_JOB = ${{ github.GITHUB_JOB }}"
-          echo "RUNNER_OS = ${{ github.RUNNER_OS }}"
+          echo "GITHUB_EVENT_NAME = ${{ GITHUB_EVENT_NAME }}"
+          echo "GITHUB_JOB = ${{ GITHUB_JOB }}"
+          echo "RUNNER_OS = ${{ RUNNER_OS }}"
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -46,20 +46,8 @@ jobs:
           this_version=$(echo "${{ github.ref }}" | cut -f3 -d'/')
           echo "RELEASE_VERSION=$this_version" >> $GITHUB_ENV
 
-      - name: dw-web-image-repo ECR push
-        if: |
-          startsWith(github.event.ref, 'refs/tags/stage-v') ||
-          endsWith(github.ref, '/staging')
-        env:
-          DOCKER_BUILDKIT: 1
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: dw-web-image-repo
-        run: |
-          docker pull nicolaka/netshoot
-          docker tag nicolaka/netshoot $ECR_REGISTRY/$ECR_WEB_REPOSITORY:$ECR_SHA_TAG
-          docker push $ECR_REGISTRY/$ECR_WEB_REPOSITORY:$ECR_SHA_TAG
 
-      - name: tdw-api-image-repo ECR
+      - name: Container image build, tag and push
         if: |
           startsWith(github.event.ref, 'refs/tags/stage-v') ||
           endsWith(github.ref, '/staging')
@@ -67,7 +55,7 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: tdw-api-image-repo
+          ECR_REPOSITORY: dw-web-image-repo
         run: |
           docker build \
                 --file ./Dockerfile \
