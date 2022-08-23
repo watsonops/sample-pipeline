@@ -27,3 +27,13 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ghcr.io/watsonops/simplewhale:v2.2.0-staging
+
+      - name: Tag and push image to Amazon ECR - Stage
+        if: endsWith(github.ref, '/staging')
+        env:
+          DOCKER_BUILDKIT: 1
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: tilt-repo
+        run: |
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:stage
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:stage

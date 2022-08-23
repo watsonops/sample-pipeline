@@ -1,0 +1,61 @@
+name: Publish Django Image
+on:
+  push:
+    branches:
+      - staging
+      - build-artifacts-update
+jobs:
+  deploy:
+    name: Deploy tilt-repo to AWS
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set env to staging
+        if: endsWith(github.ref, '/main')
+        run: |
+          echo "EKS_CLUSTER=tilt-stage" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${{ github.sha }}-stage" >> $GITHUB_ENV
+          echo "NAMESPACE_NAME=stage" >> $GITHUB_ENV
+          echo "SITE_DOMAIN=ourtilt.net" >> $GITHUB_ENV
+
+      - name: Configure AWS credentials - Stage
+        if: endsWith(github.ref, '/main')
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_STAGE }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
+          aws-region: us-west-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          DOCKER_BUILDKIT: 1
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: tilt-repo
+        run: |
+          docker build \
+                --build-arg api_domain=$SITE_DOMAIN \
+                --build-arg site_domain=$SITE_DOMAIN \
+                --file ./docker/web/Dockerfile \
+                --tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+                ./tilt/
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Tag and push image to Amazon ECR - Stage
+        if: endsWith(github.ref, '/main')
+        env:
+          DOCKER_BUILDKIT: 1
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: tilt-repo
+        run: |
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:stage
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:stage
