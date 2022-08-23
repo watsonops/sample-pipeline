@@ -43,7 +43,7 @@ jobs:
           this_version=$(echo "${{ github.ref }}" | cut -f3 -d'/')
           echo "RELEASE_VERSION=$this_version" >> $GITHUB_ENV
 
-      - name: dw-web-image-repo ECR
+      - name: dw-web-image-repo ECR push
         if: |
           startsWith(github.event.ref, 'refs/tags/stage-v') ||
           endsWith(github.ref, '/staging')
