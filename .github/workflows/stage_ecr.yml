@@ -15,7 +15,6 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Configure AWS credentials - Stage
-        if: startsWith(github.event.ref, 'refs/tags/stage-v')
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_STAGE }}
@@ -27,7 +26,8 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Set env to staging
-        if: startsWith(github.event.ref, 'refs/tags/stage-v')
+        if: |
+          endsWith(github.ref, '/staging')
         run: |
           echo "ECR_REGISTRY=786081340798.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
           echo "ECR_SHA_TAG=${{ github.sha }}" >> $GITHUB_ENV
@@ -35,7 +35,9 @@ jobs:
           echo "ECR_API_REPOSITORY=temp-api-repo" >> $GITHUB_ENV
 
       - name: temp-web-repo ECR
-        if: startsWith(github.event.ref, 'refs/tags/stage-v')
+        if: |
+          startsWith(github.event.ref, 'refs/tags/stage-v')
+          endsWith(github.ref, '/staging')
         env:
           DOCKER_BUILDKIT: 1
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -47,7 +49,9 @@ jobs:
 
 
       - name: temp-api-repo ECR
-        if: startsWith(github.event.ref, 'refs/tags/stage-v')
+        if: |
+          startsWith(github.event.ref, 'refs/tags/stage-v')
+          endsWith(github.ref, '/staging')
         id: build-image
         env:
           DOCKER_BUILDKIT: 1
@@ -57,14 +61,14 @@ jobs:
           docker build \
                 --file ./Dockerfile \
                 --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$ECR_SHA_TAG \
+                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:${{ github.event.ref }} \
                 --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:latest  \
                 .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
 
       - name: Runs on dev tag only
-        if: startsWith(github.event.ref, 'refs/tags/dev-v')
         run: |
           echo "SHA = ${{ github.sha }}"
-          whoami
-          hostname
-          date
+          echo "github event ref = ${{ github.event.ref }}"
+          echo "github ref = ${{ github.ref }}"
+
