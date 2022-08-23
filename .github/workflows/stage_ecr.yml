@@ -41,7 +41,7 @@ jobs:
           echo "ECR_WEB_REPOSITORY=temp-web-repo" >> $GITHUB_ENV
           echo "ECR_API_REPOSITORY=temp-api-repo" >> $GITHUB_ENV
           this_version=$(echo "${{ github.ref }}" | cut -f3 -d'/')
-          echo "$this_version" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$this_version" >> $GITHUB_ENV
 
       - name: temp-web-repo ECR
         if: |
@@ -70,7 +70,7 @@ jobs:
           docker build \
                 --file ./Dockerfile \
                 --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$ECR_SHA_TAG \
-                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$this_version \
+                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$RELEASE_VERSION \
                 --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:latest  \
                 .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
