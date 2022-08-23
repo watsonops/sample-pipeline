@@ -35,7 +35,7 @@ jobs:
           echo "ECR_API_REPOSITORY=temp-api-repo" >> $GITHUB_ENV
 
       - name: temp-web-repo ECR
-        if: endsWith(github.ref, '/staging')
+        if: startsWith(github.event.ref, 'refs/tags/stage-v')
         env:
           DOCKER_BUILDKIT: 1
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -47,7 +47,7 @@ jobs:
 
 
       - name: temp-api-repo ECR
-        if: endsWith(github.ref, '/staging')
+        if: startsWith(github.event.ref, 'refs/tags/stage-v')
         id: build-image
         env:
           DOCKER_BUILDKIT: 1
@@ -57,15 +57,14 @@ jobs:
           docker build \
                 --file ./Dockerfile \
                 --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$ECR_SHA_TAG \
-                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:stage  \
                 --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:latest  \
                 .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
 
-      - name: Test en vars
+      - name: Runs on dev tag only
+        if: startsWith(github.event.ref, 'refs/tags/dev-v')
         run: |
+          echo "SHA = ${{ github.sha }}"
           whoami
           hostname
           date
-
-
