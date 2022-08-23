@@ -28,41 +28,7 @@ jobs:
           git config --global user.name "Watson Ops"
           # Install vinnie
           pip install vinnie
-          # Get next version and pass along in the environment
-          # vinnie --prefix=dev-v patch
-          VINNIE_VERSION=$(vinnie --prefix=dev-v version)
-          echo "VINNIE_VERSION=$VINNIE_VERSION" >> $GITHUB_ENV
+          vinnie --prefix=dev-v version
 
-      - name: Configure AWS credentials - dev
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_STAGE }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_STAGE }}
-          aws-region: us-east-1
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Set env vars to dev
-        if: |
-          startsWith(github.event.ref, 'refs/tags/dev-v') ||
-          endsWith(github.ref, '/dev')
-        run: |
-          echo "AWS_ACCNT=626502259484" >> $GITHUB_ENV
-          echo "ECR_REGISTRY=$AWS_ACCNT.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
-          echo "ECR_SHA_TAG=${{ github.sha }}" >> $GITHUB_ENV
-          echo "ECR_REPOSITORY=dw-web-image-repo" >> $GITHUB_ENV
-          this_version=$(echo "${{ github.ref }}" | cut -f3 -d'/')
-          echo "RELEASE_VERSION=$this_version" >> $GITHUB_ENV
-
-      - name: Check runtime vars
-        run: |
-          echo "AWS_ACCNT = $AWS_ACCNT"
-          echo "Registry = $ECR_REGISTRY"
-          echo "Image repo = $ECR_REPOSITORY"
-          echo "SHA = $ECR_SHA_TAG"
-          echo "Version = $RELEASE_VERSION"
-          echo "Vinnie Version = $VINNIE_VERSION"
 
 
