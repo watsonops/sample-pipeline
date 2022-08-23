@@ -49,7 +49,7 @@ jobs:
           startsWith(github.event.ref, 'refs/tags/dev-v') ||
           endsWith(github.ref, '/dev')
         run: |
-          echo "AWS_ACCNT=368646418583" >> $GITHUB_ENV
+          echo "AWS_ACCNT=626502259484" >> $GITHUB_ENV
           echo "ECR_REGISTRY=$AWS_ACCNT.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
           echo "ECR_SHA_TAG=${{ github.sha }}" >> $GITHUB_ENV
           echo "ECR_REPOSITORY=dw-web-image-repo" >> $GITHUB_ENV
