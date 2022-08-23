@@ -31,7 +31,8 @@ jobs:
           pip install vinnie
 
           # Get next version and pass along in the environment
-          vinnie --prefix=dev patch > vinnie.txt
+          vinnie --prefix=dev-v patch > vinnie.txt
+
           export VINNIE_VERSION=`cat vinnie.txt`
           echo "vinnie_version=$VINNIE_VERSION" >> $GITHUB_ENV
 
