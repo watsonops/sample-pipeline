@@ -56,7 +56,6 @@ jobs:
           docker tag nicolaka/netshoot $ECR_REGISTRY/$ECR_WEB_REPOSITORY:$ECR_SHA_TAG
           docker push $ECR_REGISTRY/$ECR_WEB_REPOSITORY:$ECR_SHA_TAG
 
-
       - name: temp-api-repo ECR
         if: |
           startsWith(github.event.ref, 'refs/tags/stage-v') ||
