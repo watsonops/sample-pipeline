@@ -16,9 +16,6 @@ jobs:
           echo "SHA = ${{ github.sha }}"
           echo "github event ref = ${{ github.event.ref }}"
           echo "github ref = ${{ github.ref }}"
-          echo "GITHUB_EVENT_NAME = ${{ GITHUB_EVENT_NAME }}"
-          echo "GITHUB_JOB = ${{ GITHUB_JOB }}"
-          echo "RUNNER_OS = ${{ RUNNER_OS }}"
 
       - name: Checkout
         uses: actions/checkout@v2
