@@ -30,10 +30,11 @@ jobs:
         if: endsWith(github.ref, '/staging')
         run: |
           echo "ECR_REGISTRY=786081340798.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
-          echo "ECR_REPOSITORY=temp-web-repo" >> $GITHUB_ENV
-          echo "IMAGE_TAG=stage-${{ github.sha }}" >> $GITHUB_ENV
+          echo "ECR_SHA_TAG=${{ github.sha }}" >> $GITHUB_ENV
+          echo "ECR_WEB_REPOSITORY=temp-web-repo" >> $GITHUB_ENV
+          echo "ECR_API_REPOSITORY=temp-api-repo" >> $GITHUB_ENV
 
-      - name: Tag and push image to Amazon ECR - Stage
+      - name: temp-web-repo ECR
         if: endsWith(github.ref, '/staging')
         env:
           DOCKER_BUILDKIT: 1
@@ -41,9 +42,25 @@ jobs:
           ECR_REPOSITORY: temp-web-repo
         run: |
           docker pull nicolaka/netshoot
-          docker tag nicolaka/netshoot $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag nicolaka/netshoot $ECR_REGISTRY/$ECR_WEB_REPOSITORY:$ECR_SHA_TAG
+          docker push $ECR_REGISTRY/$ECR_WEB_REPOSITORY:$ECR_SHA_TAG
 
+
+      - name: temp-api-repo ECR
+        if: endsWith(github.ref, '/staging')
+        id: build-image
+        env:
+          DOCKER_BUILDKIT: 1
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: temp-api-repo
+        run: |
+          docker build \
+                --file ./Dockerfile \
+                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$ECR_SHA_TAG \
+                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:stage  \
+                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:latest  \
+                .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$ECR_SHA_TAG
 
 
 
