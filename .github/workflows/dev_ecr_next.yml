@@ -16,6 +16,7 @@ jobs:
           echo "SHA = ${{ github.sha }}"
           echo "github event ref = ${{ github.event.ref }}"
           echo "github ref = ${{ github.ref }}"
+          echo "test update"
 
       - name: Checkout
         uses: actions/checkout@v2
