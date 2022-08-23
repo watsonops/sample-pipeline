@@ -36,13 +36,12 @@ jobs:
           startsWith(github.event.ref, 'refs/tags/stage-v') ||
           endsWith(github.ref, '/staging')
         run: |
-          echo "ECR_REGISTRY=786081340798.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
+          echo "AWS_ACCNT=770750324254" >> $GITHUB_ENV
+          echo "ECR_REGISTRY=${{ AWS_ACCNT }}.dkr.ecr.us-east-1.amazonaws.com" >> $GITHUB_ENV
           echo "ECR_SHA_TAG=${{ github.sha }}" >> $GITHUB_ENV
           echo "ECR_WEB_REPOSITORY=dw-web-image-repo" >> $GITHUB_ENV
-          echo "ECR_API_REPOSITORY=tdw-api-image-repo" >> $GITHUB_ENV
           this_version=$(echo "${{ github.ref }}" | cut -f3 -d'/')
           echo "RELEASE_VERSION=$this_version" >> $GITHUB_ENV
-
 
       - name: Container image build, tag and push
         if: |
