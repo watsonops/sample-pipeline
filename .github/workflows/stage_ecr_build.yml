@@ -43,6 +43,14 @@ jobs:
           this_version=$(echo "${{ github.ref }}" | cut -f3 -d'/')
           echo "RELEASE_VERSION=$this_version" >> $GITHUB_ENV
 
+      - name: Check runtime vars
+        run: |
+          echo "AWS_ACCNT = $AWS_ACCNT"
+          echo "Registry = $ECR_REGISTRY"
+          echo "Image repo = $ECR_REPOSITORY"
+          echo "SHA = $ECR_SHA_TAG"
+          echo "Version = $RELEASE_VERSION"
+
       - name: Container image build, tag and push
         if: |
           startsWith(github.event.ref, 'refs/tags/stage-v') ||
@@ -55,9 +63,9 @@ jobs:
         run: |
           docker build \
                 --file ./Dockerfile \
-                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$ECR_SHA_TAG \
-                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:$RELEASE_VERSION \
-                --tag $ECR_REGISTRY/$ECR_API_REPOSITORY:latest  \
+                --tag $ECR_REGISTRY/$ECR_REPOSITORY:$ECR_SHA_TAG \
+                --tag $ECR_REGISTRY/$ECR_REPOSITORY:$RELEASE_VERSION \
+                --tag $ECR_REGISTRY/$ECR_REPOSITORY:latest  \
                 .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY --all-tags
 
