@@ -29,11 +29,9 @@ jobs:
           # Install vinnie
           pip install vinnie
           # Get next version and pass along in the environment
-          vinnie --prefix=dev-v version
+          vinnie --prefix=dev-v patch
           VINNIE_VERSION=$(vinnie --prefix=dev-v version)
           echo "VINNIE_VERSION=$VINNIE_VERSION" >> $GITHUB_ENV
-          VINNIE_NEXT_VERSION=$(vinnie --prefix=dev-v patch)
-          echo "Next version = $VINNIE_NEXT_VERSION"
 
       - name: Configure AWS credentials - dev
         uses: aws-actions/configure-aws-credentials@v1
@@ -66,7 +64,6 @@ jobs:
           echo "SHA = $ECR_SHA_TAG"
           echo "Version = $RELEASE_VERSION"
           echo "Vinnie Version = $VINNIE_VERSION"
-          echo "Next Version = $VINNIE_NEXT_VERSION"
 
       - name: Container image build, tag and push
         if: |
